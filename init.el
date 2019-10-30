@@ -21,14 +21,26 @@
 (defconst *spell-check-support-enabled* nil) ;; Enable with t if you prefer
 (defconst *is-a-mac* (eq system-type 'darwin))
 
-;;----------------------------------------------------------------------------
-;; Adjust garbage collection thresholds during startup, and thereafter
-;;----------------------------------------------------------------------------
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+;; (Eric did this) Deal with the TLS1.3 Bug that seems to affect Melpa?
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+;; (Eric did this)
+;; Deal with windmove controls in terminal char mode
+(eval-after-load "term"
+  '(progn
+     (define-key term-raw-map (kbd "C-<left>") 'windmove-left)
+     (define-key term-raw-map (kbd "C-<right>") 'windmove-right)
+     (define-key term-raw-map (kbd "C-<up>") 'windmove-up)
+     (define-key term-raw-map (kbd "C-<down>") 'windmove-down)))
+
+     ;;----------------------------------------------------------------------------
+     ;; Adjust garbage collection thresholds during startup, and thereafter
+     ;;----------------------------------------------------------------------------
+     (let ((normal-gc-cons-threshold (* 20 1024 1024))
+           (init-gc-cons-threshold (* 128 1024 1024)))
+       (setq gc-cons-threshold init-gc-cons-threshold)
+       (add-hook 'emacs-startup-hook
+                 (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
@@ -72,7 +84,7 @@
 (require 'init-hippie-expand)
 (require 'init-company)
 (require 'init-windows)
-(require 'init-sessions)
+;;(require 'init-sessions)
 (require 'init-mmm)
 
 (require 'init-editing-utils)
@@ -148,6 +160,11 @@
   (setq-default uptimes-keep-count 200)
   (add-hook 'after-init-hook (lambda () (require 'uptimes))))
 
+;;----------------------------------------------------------------------------
+;; Require Custom Eric Settings
+(require 'eric-custom "~/.emacs.d/eric-custom.el")
+;;----------------------------------------------------------------------------
+
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
@@ -176,8 +193,27 @@
 ;;----------------------------------------------------------------------------
 (require 'init-local nil t)
 
+;;----------------------------------------------------------------------------
+;; Add Quicklisp Features for Emacs
+;;----------------------------------------------------------------------------
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; Replace "sbcl" with the path to your implementation
+(setq inferior-lisp-program "sbcl")
 
+;;----------------------------------------------------------------------------
+;; Set elpy's python to be python3
+;;----------------------------------------------------------------------------
+(setq elpy-rpc-python-command "python3")
 
+;;----------------------------------------------------------------------------
+;; Try to enable windmove for cycling through open windows
+;;----------------------------------------------------------------------------
+(windmove-default-keybindings 'control)
+
+;;----------------------------------------------------------------------------
+;; Set global default font properties
+;;----------------------------------------------------------------------------
+(set-face-attribute 'default nil :font "Fira Mono-12")
 (provide 'init)
 
 ;; Local Variables:
