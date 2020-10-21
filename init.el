@@ -168,6 +168,7 @@
 ;; Require Custom Eric Settings
 ;;----------------------------------------------------------------------------
 (require 'eric-custom "~/.emacs.d/eric-custom.el")
+(require 'eric-custom-org "~/.emacs.d/eric-custom-org.el")
 
 
 ;;----------------------------------------------------------------------------

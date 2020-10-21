@@ -13,19 +13,6 @@
      (define-key elpy-mode-map (kbd key) nil)))
 
 
-;; Use Libre Baskerville when in Olivetti Mode
-;; Possible faces:
-;; "Baskervald ADF Std"
-;; "Libre Baskerville"
-(defun olivetti-mode-use-baskerville ()
-  "Set the font face for Olivetti mode to BAskervald"
-  (interactive)
-  (setq buffer-face-mode-face '(:family "FreeSerif" :height 150 :width normal))
-  (buffer-face-mode))
-
-;; Set to Olivetti hook
-(add-hook 'olivetti-mode-hook 'olivetti-mode-use-baskerville)
-
 ;; Add command for killing all buffers
 (defun kill-all-buffers ()
   "Kill all open buffers."
@@ -33,15 +20,26 @@
   (mapc 'kill-buffer (buffer-list))
   (delete-other-windows))
 
-;; Use master password for
-;; Twittering Mode
-(setq twittering-use-master-password t)
+;; All the icons
+(require 'all-the-icons)
 
-;; IRC Settings
+;; Dashboard startup screen
+(require 'dashboard)
+(dashboard-setup-startup-hook)
 
+;; Customize the startup dashboard
+(setq dashboard-banner-logo-title "𒈦𒄘𒃼")
+(setq dashboard-startup-banner "~/.emacs.d/lamassu.png")
+(setq dashboard-center-content t)
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(setq dashboard-set-footer nil)
 
-;; Shampoo Settings
-(add-to-list 'load-path "/home/ecgade/.emacs.d/shampoo/shampoo-emacs")
-(require 'shampoo)
+;; Use the Doom Modeline
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+
+;; Config a custom eshell prompt
+(require 'custom-eshell-prompt "~/.emacs.d/custom-eshell-prompt.el")
 
 (provide 'eric-custom)
